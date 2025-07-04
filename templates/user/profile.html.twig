@@ -1,0 +1,54 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ user.email }}'s Profile{% endblock %}
+
+{% block body %}
+<h1>{{ user.email }}'s Profile</h1>
+
+<div class="card mb-4">
+    <div class="card-body">
+        <h5 class="card-title">User Information</h5>
+        <p class="card-text">Email: {{ user.email }}</p>
+        <p class="card-text">Roles:
+            {% for role in user.roles %}
+                <span class="badge bg-secondary">{{ role|replace({'ROLE_': ''}) }}</span>
+            {% endfor %}
+        </p>
+        {% if is_admin() and app.user.id != user.id %}
+            <form action="{% if user.isBlocked %}{{ path('app_admin_user_unblock', {'id': user.id}) }}{% else %}{{ path('app_admin_user_block', {'id': user.id}) }}{% endif %}" method="post" class="d-inline me-2">
+                <input type="hidden" name="_token" value="{{ csrf_token('user_block_unblock' ~ user.id) }}">
+                <button type="submit" class="btn btn-sm {% if user.isBlocked %}btn-success{% else %}btn-warning{% endif %}">
+                    {% if user.isBlocked %}Unblock{% else %}Block{% endif %}
+                </button>
+            </form>
+            <form action="{% if 'ROLE_ADMIN' in user.roles %}{{ path('app_admin_user_remove_admin', {'id': user.id}) }}{% else %}{{ path('app_admin_user_set_admin', {'id': user.id}) }}{% endif %}" method="post" class="d-inline me-2">
+                <input type="hidden" name="_token" value="{{ csrf_token('user_admin_role' ~ user.id) }}">
+                <button type="submit" class="btn btn-sm {% if 'ROLE_ADMIN' in user.roles %}btn-danger{% else %}btn-primary{% endif %}">
+                    {% if 'ROLE_ADMIN' in user.roles %}Remove Admin{% else %}Make Admin{% endif %}
+                </button>
+            </form>
+            <form action="{{ path('app_admin_user_delete', {'id': user.id}) }}" method="post" onsubmit="return confirm('Are you sure you want to delete this user? This action is irreversible.');" class="d-inline">
+                <input type="hidden" name="_token" value="{{ csrf_token('user_delete' ~ user.id) }}">
+                <button type="submit" class="btn btn-sm btn-danger">Delete User</button>
+            </form>
+        {% endif %}
+    </div>
+</div>
+
+<ul class="nav nav-tabs" id="profileTabs" role="tablist">
+    <li class="nav-item" role="presentation">
+        <button class="nav-link active" id="my-templates-tab" data-bs-toggle="tab" data-bs-target="#my-templates" type="button" role="tab" aria-controls="my-templates" aria-selected="true">My Templates ({{ user.templates|length }})</button>
+    </li>
+    <li class="nav-item" role="presentation">
+        <button class="nav-link" id="my-forms-tab" data-bs-toggle="tab" data-bs-target="#my-forms" type="button" role="tab" aria-controls="my-forms" aria-selected="false">My Filled Forms ({{ user.forms|length }})</button>
+    </li>
+</ul>
+<div class="tab-content border border-top-0 p-3" id="profileTabsContent">
+    <div class="tab-pane fade show active" id="my-templates" role="tabpanel" aria-labelledby="my-templates-tab">
+        {% include 'user/_templates_tab.html.twig' with {'templates': user.templates} %}
+    </div>
+    <div class="tab-pane fade" id="my-forms" role="tabpanel" aria-labelledby="my-forms-tab">
+        {% include 'user/_forms_tab.html.twig' with {'forms': user.forms} %}
+    </div>
+</div>
+{% endblock %}

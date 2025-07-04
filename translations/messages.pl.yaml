@@ -1,0 +1,120 @@
+# translations/messages.pl.yaml
+# Polish translations
+
+# General UI
+app.name: Aplikacja Formularzy
+button.save: Zapisz
+button.create: Utwórz
+button.edit: Edytuj
+button.delete: Usuń
+button.view: Zobacz
+button.submit: Wyślij
+button.login: Zaloguj się
+button.register: Zarejestruj się
+button.logout: Wyloguj się
+button.search: Szukaj
+button.back: Wstecz
+
+# Navigation
+nav.home: Strona główna
+nav.all_templates: Wszystkie szablony
+nav.admin_panel: Panel administratora
+nav.my_profile: Mój profil
+
+# Flash Messages
+flash.success.template_created: Szablon utworzony pomyślnie!
+flash.success.template_updated: Szablon zaktualizowany pomyślnie!
+flash.success.template_deleted: Szablon usunięty pomyślnie!
+flash.success.form_submitted: Formularz wysłany pomyślnie!
+flash.success.form_updated: Odpowiedzi formularza zaktualizowane pomyślnie!
+flash.success.form_deleted: Formularz usunięty pomyślnie!
+flash.success.user_blocked: Użytkownik zablokowany pomyślnie.
+flash.success.user_unblocked: Użytkownik odblokowany pomyślnie.
+flash.success.user_deleted: Użytkownik usunięty pomyślnie.
+flash.success.user_set_admin: Użytkownik otrzymał dostęp administratora.
+flash.success.user_removed_admin: Dostęp administratora został usunięty użytkownikowi.
+flash.error.template_conflict: Ten szablon został zmodyfikowany przez innego użytkownika. Sprawdź zmiany i spróbuj ponownie.
+flash.error.form_conflict: Te odpowiedzi zostały zmodyfikowane przez innego użytkownika. Sprawdź i spróbuj ponownie.
+flash.error.access_denied: Nie masz uprawnień do wykonania tej akcji.
+flash.error.own_admin_delete: Nie możesz usunąć własnego konta administratora.
+flash.error.own_admin_remove_role: Nie możesz usunąć sobie uprawnień administratora.
+
+# Home Page
+home.latest_templates: Najnowsze szablony
+home.top_popular_templates: 5 najpopularniejszych szablonów
+home.tag_cloud: Chmura tagów
+home.no_templates_found: Nie znaleziono jeszcze żadnych szablonów. Może stworzysz swój?
+home.no_popular_templates: Brak popularnych szablonów.
+home.no_tags: Brak tagów.
+
+# Template Specific
+template.title: Tytuł szablonu
+template.description: Opis (obsługa Markdown)
+template.image_url: URL obrazu
+template.topic: Temat
+template.access_settings: Ustawienia dostępu
+template.access_public: Publiczny (każdy uwierzytelniony użytkownik)
+template.access_restricted: Ograniczony (tylko wskazani użytkownicy)
+template.select_users: Wybierz użytkowników (wpisz nazwę lub e-mail, aby autouzupełnić)
+template.questions: Pytania
+template.questions.reorder_help: Przeciągnij i upuść, aby zmienić kolejność pytań.
+template.question_type.string: Tekst jednowierszowy
+template.question_type.text: Tekst wielowierszowy
+template.question_type.int: Liczba całkowita nieujemna
+template.question_type.checkbox: Pole wyboru
+template.display_in_table: Wyświetl w tabeli wyników
+template.comments: Komentarze
+template.no_comments: Brak komentarzy. Bądź pierwszym, który skomentuje!
+template.add_comment: Dodaj komentarz
+template.post_comment: Opublikuj komentarz
+template.login_to_comment: Zaloguj się, aby dodać komentarz.
+template.fill_out_form: Wypełnij formularz
+template.no_access_to_fill: Nie masz dostępu do wypełnienia tego szablonu.
+template.filled_forms_count: 'Wyniki (%count%)'
+template.aggregation: Agregacja
+template.no_forms_to_aggregate: Brak wypełnionych formularzy do agregacji danych.
+
+# Forms Specific
+form.submitted_by: Wysłane przez
+form.submitted_at: Wysłano o
+form.submission_date: Data wysłania
+form.answers: Odpowiedzi
+form.edit_answers: Edytuj odpowiedzi
+form.view_answers: Zobacz odpowiedzi
+form.no_access_to_view: Nie masz uprawnień do przeglądania tego formularza.
+
+# User Profile
+profile.user_information: Informacje o użytkowniku
+profile.email: E-mail
+profile.roles: Role
+profile.my_templates: Moje szablony (%count%)
+profile.my_filled_forms: Moje wypełnione formularze (%count%)
+profile.no_templates_yet: Nie utworzyłeś jeszcze żadnych szablonów.
+profile.no_forms_yet: Nie wypełniłeś jeszcze żadnych formularzy.
+profile.create_first_template: Utwórz swój pierwszy szablon
+
+# Admin Panel
+admin.user_management: Zarządzanie użytkownikami
+admin.id: ID
+admin.email: E-mail
+admin.roles: Role
+admin.status: Status
+admin.actions: Akcje
+admin.blocked: Zablokowany
+admin.active: Aktywny
+admin.block: Zablokuj
+admin.unblock: Odblokuj
+admin.make_admin: Nadaj uprawnienia admina
+admin.remove_admin: Usuń uprawnienia admina
+admin.delete_user: Usuń użytkownika
+admin.current_admin: Aktualny administrator
+
+# Security
+security.login.email: E-mail
+security.login.password: Hasło
+security.login.remember_me: Zapamiętaj mnie
+security.login.sign_in: Zaloguj się
+security.login.no_account: Nie masz konta? <a href="%path_register%">Zarejestruj się tutaj</a>
+security.register.repeat_password: Powtórz hasło
+security.register.agree_terms: 'Zgadzam się na <a href="#">warunki</a>'
+security.register.already_have_account: Masz już konto? <a href="%path_login%">Zaloguj się tutaj</a>

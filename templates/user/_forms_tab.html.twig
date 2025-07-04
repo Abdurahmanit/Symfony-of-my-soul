@@ -1,0 +1,34 @@
+{# templates/user/_forms_tab.html.twig #}
+{# Variables: forms (Collection of App\Entity\Form) #}
+
+{% if forms is empty %}
+    <p>You haven't filled out any forms yet.</p>
+{% else %}
+    <div class="table-responsive">
+        <table class="table table-striped table-hover">
+            <thead>
+                <tr>
+                    <th>Template</th>
+                    <th>Submitted At</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for form in forms %}
+                    <tr>
+                        <td><a href="{{ path('app_template_show', {'id': form.template.id}) }}">{{ form.template.title }}</a></td>
+                        <td>{{ form.submittedAt|date('Y-m-d H:i') }}</td>
+                        <td>
+                            <a href="{{ path('app_form_show', {'id': form.id}) }}" class="btn btn-sm btn-primary me-1">View</a>
+                            <a href="{{ path('app_form_edit', {'id': form.id}) }}" class="btn btn-sm btn-info me-1">Edit</a>
+                            <form action="{{ path('app_form_delete', {'id': form.id}) }}" method="post" onsubmit="return confirm('Are you sure you want to delete this form?');" class="d-inline">
+                                <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ form.id) }}">
+                                <button type="submit" class="btn btn-sm btn-danger">Delete</button>
+                            </form>
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+{% endif %}

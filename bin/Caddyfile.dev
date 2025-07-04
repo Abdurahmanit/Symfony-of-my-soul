@@ -1,0 +1,23 @@
+:3000
+
+route {
+    mercure {
+        publisher_jwt "8EyVj0LRIcFHKYmZlKmWlPh7QRYBY0vllq33YBIYKnw="
+
+        subscriber_jwt "8EyVj0LRIcFHKYmZlKmWlPh7QRYBY0vllq33YBIYKnw="
+
+        cors_origins "http://localhost:8000" "http://127.0.0.1:8000" # Explicitly allow your Symfony app's origin
+        publish_origins *
+        demo
+        anonymous
+        subscriptions
+        debug
+    }
+
+    redir / /.well-known/mercure/ui/
+
+    respond /healthz 200
+    respond /robots.txt `User-agent: *
+Disallow: /`
+    respond "Not Found" 404
+}

@@ -1,0 +1,32 @@
+{# templates/template/_comments.html.twig #}
+{# Variables: template (App\Entity\Template), comments (array of App\Entity\Comment) #}
+
+<div id="comments-list" class="mb-4" style="max-height: 400px; overflow-y: auto; border: 1px solid #eee; padding: 15px; border-radius: 8px;">
+    {% if comments is empty %}
+        <p>No comments yet. Be the first to comment!</p>
+    {% else %}
+        {% for comment in comments %}
+            <div class="card mb-2">
+                <div class="card-body">
+                    <h6 class="card-subtitle mb-2 text-muted">{{ comment.user.email }} <small>on {{ comment.createdAt|date('Y-m-d H:i') }}</small></h6>
+                    <p class="card-text">{{ comment.content }}</p>
+                </div>
+            </div>
+        {% endfor %}
+    {% endif %}
+</div>
+
+{% if is_granted('ROLE_USER') %}
+    <div class="mt-4">
+        <form id="comment-form">
+            <div class="mb-3">
+                <label for="comment_content" class="form-label">Add a Comment</label>
+                <textarea class="form-control" id="comment_content" rows="3" required></textarea>
+            </div>
+            <input type="hidden" name="_csrf_token" value="{{ csrf_token('comment_add') }}">
+            <button type="submit" class="btn btn-primary">Post Comment</button>
+        </form>
+    </div>
+{% else %}
+    <p class="text-muted mt-4">Please <a href="{{ path('app_login') }}">log in</a> to leave a comment.</p>
+{% endif %}

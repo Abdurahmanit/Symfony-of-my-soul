@@ -1,0 +1,22 @@
+{# templates/template/_questions.html.twig #}
+{# Used to display questions within the template show page #}
+{# Variables: template (App\Entity\Template) #}
+
+{% if template.questions is empty %}
+    <p>No questions defined for this template.</p>
+{% else %}
+    <div class="list-group">
+        {% for question in template.questions %}
+            <div class="list-group-item d-flex justify-content-between align-items-center question-item">
+                <div>
+                    <h5>{{ question.title }}</h5>
+                    {% if question.description %}
+                        <p class="mb-1 text-muted">{{ question.description }}</p>
+                    {% endif %}
+                    <small>Type: {{ question.type|capitalize }}</small><br>
+                    <small>Display in results table: {{ question.showInTable ? 'Yes' : 'No' }}</small>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+{% endif %}

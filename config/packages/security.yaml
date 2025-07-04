@@ -1,0 +1,49 @@
+security:
+    enable_authenticator_manager: true
+    providers:
+        app_user_provider:
+            entity:
+                class: App\Entity\User
+                property: email
+
+    firewalls:
+        dev:
+            pattern: ^/(_(profiler|wdt)|css|images|js)/
+            security: false
+        main:
+            lazy: true
+            provider: app_user_provider
+            form_login:
+                login_path: app_login
+                check_path: app_login
+                enable_csrf: true
+            logout:
+                path: app_logout
+                target: app_home
+
+    role_hierarchy:
+        ROLE_ADMIN: [ROLE_USER, ROLE_ALLOWED_TO_SWITCH]
+
+    access_control:
+        - { path: ^/login$, roles: PUBLIC_ACCESS }
+        - { path: ^/register$, roles: PUBLIC_ACCESS }
+        - { path: ^/$, roles: PUBLIC_ACCESS }
+        - { path: ^/templates$, roles: PUBLIC_ACCESS }
+        - { path: ^/template/\d+$, roles: PUBLIC_ACCESS }
+        - { path: ^/search, roles: PUBLIC_ACCESS }
+        - { path: ^/set-theme, roles: PUBLIC_ACCESS }
+        - { path: ^/set-locale, roles: PUBLIC_ACCESS }
+        - { path: ^/profile, roles: ROLE_USER }
+        - { path: ^/template/new, roles: ROLE_USER }
+        - { path: ^/template/\d+/edit, roles: ROLE_USER }
+        - { path: ^/template/\d+/delete, roles: ROLE_USER }
+        - { path: ^/template/\d+/fill, roles: ROLE_USER }
+        - { path: ^/form/\d+, roles: ROLE_USER }
+        - { path: ^/api, roles: ROLE_USER }
+        - { path: ^/admin, roles: ROLE_ADMIN }
+
+when@dev:
+    security:
+        firewalls:
+            main:
+                switch_user: { provider: app_user_provider }

@@ -1,0 +1,29 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Fill: {{ template.title }}{% endblock %}
+
+{% block body %}
+<h1>Fill Out: {{ template.title }}</h1>
+<p class="text-muted">{{ template.description|markdown }}</p>
+
+{{ form_start(form) }}
+    {# Hidden fields for fixed data #}
+    <input type="hidden" name="form[_token]" value="{{ csrf_token('form_answer_item') }}">
+    {# Symfony Form component automatically handles fixedUserEmail and fixedDate based on entity listeners/controllers #}
+
+    {% for question in template.questions %}
+        {% set field_name = question.type ~ 'Answer' ~ (loop.index0 + 1) %}
+        {% if form[field_name] is defined %}
+            <div class="form-section mb-3">
+                <h5 class="mb-2">{{ question.title }}</h5>
+                {% if question.description %}
+                    <p class="text-muted">{{ question.description }}</p>
+                {% endif %}
+                {{ form_row(form[field_name]) }}
+            </div>
+        {% endif %}
+    {% endfor %}
+
+    <button type="submit" class="btn btn-success btn-lg mt-4">Submit Form</button>
+{{ form_end(form) }}
+{% endblock %}

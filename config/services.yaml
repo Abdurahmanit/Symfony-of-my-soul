@@ -1,0 +1,51 @@
+parameters:
+    app.cloudinary_cloud_name: '%env(CLOUDINARY_CLOUD_NAME)%'
+    app.cloudinary_api_key: '%env(CLOUDINARY_API_KEY)%'
+    app.cloudinary_api_secret: '%env(CLOUDINARY_API_SECRET)%'
+    app.results_per_page: 10
+
+services:
+    _defaults:
+        autowire: true
+        autoconfigure: true
+        public: false
+
+    App\:
+        resource: '../src/'
+        exclude:
+            - '../src/DependencyInjection/'
+            - '../src/Entity/'
+            - '../src/Kernel.php'
+
+    App\Controller\:
+        resource: '../src/Controller/'
+        tags: ['controller.service_arguments']
+
+    App\Service\ImageUploader:
+        arguments:
+            $cloudName: '%app.cloudinary_cloud_name%'
+            $apiKey: '%app.cloudinary_api_key%'
+            $apiSecret: '%app.cloudinary_api_secret%'
+
+    App\Service\SearchService:
+        arguments:
+            $entityManager: '@doctrine.orm.entity_manager'
+            $paginator: '@knp_paginator'
+            $itemsPerPage: '%app.results_per_page%'
+
+    App\Service\CommentService:
+        arguments:
+            $publisher: '@Mercure\Hub.default'
+            $entityManager: '@doctrine.orm.entity_manager'
+
+    App\Service\ThemeLocaleService:
+        public: true
+
+    Knp\Bundle\MarkdownBundle\MarkdownParser:
+        public: true
+
+    App\Twig\AppExtension:
+        arguments:
+            $markdownParser: '@knp_markdown.parser.markdown'
+            $themeLocaleService: '@App\Service\ThemeLocaleService'
+            $security: '@security.helper'

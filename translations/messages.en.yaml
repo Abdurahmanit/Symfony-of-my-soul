@@ -1,0 +1,121 @@
+# translations/messages.en.yaml
+# Default English translations
+# Used for UI text, flash messages, etc.
+
+# General UI
+app.name: Forms App
+button.save: Save
+button.create: Create
+button.edit: Edit
+button.delete: Delete
+button.view: View
+button.submit: Submit
+button.login: Sign in
+button.register: Register
+button.logout: Logout
+button.search: Search
+button.back: Back
+
+# Navigation
+nav.home: Home
+nav.all_templates: All Templates
+nav.admin_panel: Admin Panel
+nav.my_profile: My Profile
+
+# Flash Messages
+flash.success.template_created: Template created successfully!
+flash.success.template_updated: Template updated successfully!
+flash.success.template_deleted: Template deleted successfully!
+flash.success.form_submitted: Form submitted successfully!
+flash.success.form_updated: Form answers updated successfully!
+flash.success.form_deleted: Form deleted successfully!
+flash.success.user_blocked: User blocked successfully.
+flash.success.user_unblocked: User unblocked successfully.
+flash.success.user_deleted: User deleted successfully.
+flash.success.user_set_admin: User granted admin access.
+flash.success.user_removed_admin: Admin access removed from user.
+flash.error.template_conflict: This template was modified by another user. Please review changes and try again.
+flash.error.form_conflict: These answers were modified by another user. Please review and try again.
+flash.error.access_denied: You are not authorized to perform this action.
+flash.error.own_admin_delete: You cannot delete your own admin account.
+flash.error.own_admin_remove_role: You cannot remove admin access from yourself.
+
+# Home Page
+home.latest_templates: Latest Templates
+home.top_popular_templates: Top 5 Most Popular Templates
+home.tag_cloud: Tag Cloud
+home.no_templates_found: No templates found yet. Why not create one?
+home.no_popular_templates: No popular templates yet.
+home.no_tags: No tags yet.
+
+# Template Specific
+template.title: Template Title
+template.description: Description (Markdown supported)
+template.image_url: Image URL
+template.topic: Topic
+template.access_settings: Access Settings
+template.access_public: Public (Any authenticated user)
+template.access_restricted: Restricted (Only specified users)
+template.select_users: Select Users (Type name or email to autocomplete)
+template.questions: Questions
+template.questions.reorder_help: Drag and drop to reorder questions.
+template.question_type.string: Single-line String
+template.question_type.text: Multi-line Text
+template.question_type.int: Non-negative Integer
+template.question_type.checkbox: Checkbox
+template.display_in_table: Display in results table
+template.comments: Comments
+template.no_comments: No comments yet. Be the first to comment!
+template.add_comment: Add a Comment
+template.post_comment: Post Comment
+template.login_to_comment: Please <a href="%path_login%">log in</a> to leave a comment.
+template.fill_out_form: Fill Out Form
+template.no_access_to_fill: You do not have access to fill out this template.
+template.filled_forms_count: 'Results (%count%)'
+template.aggregation: Aggregation
+template.no_forms_to_aggregate: No forms filled yet to aggregate data.
+
+# Forms Specific
+form.submitted_by: Submitted By
+form.submitted_at: Submitted At
+form.submission_date: Submission Date
+form.answers: Answers
+form.edit_answers: Edit Answers
+form.view_answers: View Answers
+form.no_access_to_view: You are not authorized to view this form.
+
+# User Profile
+profile.user_information: User Information
+profile.email: Email
+profile.roles: Roles
+profile.my_templates: My Templates (%count%)
+profile.my_filled_forms: My Filled Forms (%count%)
+profile.no_templates_yet: You haven't created any templates yet.
+profile.no_forms_yet: You haven't filled out any forms yet.
+profile.create_first_template: Create Your First Template
+
+# Admin Panel
+admin.user_management: User Management
+admin.id: ID
+admin.email: Email
+admin.roles: Roles
+admin.status: Status
+admin.actions: Actions
+admin.blocked: Blocked
+admin.active: Active
+admin.block: Block
+admin.unblock: Unblock
+admin.make_admin: Make Admin
+admin.remove_admin: Remove Admin
+admin.delete_user: Delete User
+admin.current_admin: Current Admin
+
+# Security
+security.login.email: Email
+security.login.password: Password
+security.login.remember_me: Remember me
+security.login.sign_in: Sign in
+security.login.no_account: Don't have an account? <a href="%path_register%">Register here</a>
+security.register.repeat_password: Repeat Password
+security.register.agree_terms: 'Agree to our <a href="#">terms</a>'
+security.register.already_have_account: Already have an account? <a href="%path_login%">Login here</a>

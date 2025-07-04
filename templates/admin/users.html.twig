@@ -1,0 +1,87 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Admin - User Management{% endblock %}
+
+{% block body %}
+<h1>Admin - User Management</h1>
+
+<div class="table-responsive">
+    <table class="table table-striped table-hover">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Email</th>
+                <th>Roles</th>
+                <th>Status</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for user_item in users %}
+                <tr>
+                    <td>{{ user_item.id }}</td>
+                    <td>{{ user_item.email }}</td>
+                    <td>
+                        {% for role in user_item.roles %}
+                            <span class="badge bg-secondary me-1">{{ role|replace({'ROLE_': ''}) }}</span>
+                        {% endfor %}
+                    </td>
+                    <td>
+                        {% if user_item.isBlocked %}
+                            <span class="badge bg-danger">Blocked</span>
+                        {% else %}
+                            <span class="badge bg-success">Active</span>
+                        {% endif %}
+                    </td>
+                    <td>
+                        <div class="btn-group" role="group" aria-label="User actions">
+                            {% if user_item.id != app.user.id %} {# Prevent actions on self #}
+                                {% if user_item.isBlocked %}
+                                    <form action="{{ path('app_admin_user_unblock', {'id': user_item.id}) }}" method="post" onsubmit="return confirm('Are you sure you want to unblock this user?');">
+                                        <input type="hidden" name="_token" value="{{ csrf_token('user_block_unblock' ~ user_item.id) }}">
+                                        <button type="submit" class="btn btn-sm btn-success me-1">Unblock</button>
+                                    </form>
+                                {% else %}
+                                    <form action="{{ path('app_admin_user_block', {'id': user_item.id}) }}" method="post" onsubmit="return confirm('Are you sure you want to block this user?');">
+                                        <input type="hidden" name="_token" value="{{ csrf_token('user_block_unblock' ~ user_item.id) }}">
+                                        <button type="submit" class="btn btn-sm btn-warning me-1">Block</button>
+                                    </form>
+                                {% endif %}
+
+                                {% if 'ROLE_ADMIN' in user_item.roles %}
+                                    <form action="{{ path('app_admin_user_remove_admin', {'id': user_item.id}) }}" method="post" onsubmit="return confirm('Are you sure you want to remove admin access from this user?');">
+                                        <input type="hidden" name="_token" value="{{ csrf_token('user_admin_role' ~ user_item.id) }}">
+                                        <button type="submit" class="btn btn-sm btn-info me-1">Remove Admin</button>
+                                    </form>
+                                {% else %}
+                                    <form action="{{ path('app_admin_user_set_admin', {'id': user_item.id}) }}" method="post" onsubmit="return confirm('Are you sure you want to grant admin access to this user?');">
+                                        <input type="hidden" name="_token" value="{{ csrf_token('user_admin_role' ~ user_item.id) }}">
+                                        <button type="submit" class="btn btn-sm btn-primary me-1">Make Admin</button>
+                                    </form>
+                                {% endif %}
+
+                                <form action="{{ path('app_admin_user_delete', {'id': user_item.id}) }}" method="post" onsubmit="return confirm('Are you sure you want to delete this user? This action is irreversible!');">
+                                    <input type="hidden" name="_token" value="{{ csrf_token('user_delete' ~ user_item.id) }}">
+                                    <button type="submit" class="btn btn-sm btn-danger">Delete</button>
+                                </form>
+                            {% else %}
+                                <span class="text-muted">Current Admin</span>
+                                {% if 'ROLE_ADMIN' in user_item.roles and users|filter(u => 'ROLE_ADMIN' in u.roles)|length > 1 %}
+                                     <form action="{{ path('app_admin_user_remove_admin', {'id': user_item.id}) }}" method="post" onsubmit="return confirm('Are you sure you want to remove admin access from yourself? You will no longer have admin privileges.');" class="d-inline ms-2">
+                                        <input type="hidden" name="_token" value="{{ csrf_token('user_admin_role' ~ user_item.id) }}">
+                                        <button type="submit" class="btn btn-sm btn-warning">Remove My Admin</button>
+                                    </form>
+                                {% endif %}
+                            {% endif %}
+                        </div>
+                    </td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+<div class="navigation d-flex justify-content-center">
+    {{ knp_pagination_render(users) }}
+</div>
+{% endblock %}

@@ -1,0 +1,44 @@
+{# templates/user/_templates_tab.html.twig #}
+{# Variables: templates (Collection of App\Entity\Template) #}
+
+{% if templates is empty %}
+    <p>You haven't created any templates yet.</p>
+    {% if app.user == user %}
+        <a href="{{ path('app_template_new') }}" class="btn btn-primary">Create Your First Template</a>
+    {% endif %}
+{% else %}
+    <div class="table-responsive">
+        <table class="table table-striped table-hover">
+            <thead>
+                <tr>
+                    <th>Title</th>
+                    <th>Topic</th>
+                    <th>Created At</th>
+                    <th>Forms Filled</th>
+                    <th>Likes</th>
+                    <th>Access</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for template in templates %}
+                    <tr>
+                        <td><a href="{{ path('app_template_show', {'id': template.id}) }}">{{ template.title }}</a></td>
+                        <td>{{ template.topic.name }}</td>
+                        <td>{{ template.createdAt|date('Y-m-d') }}</td>
+                        <td>{{ template.forms|length }}</td>
+                        <td>{{ template.likes }}</td>
+                        <td><span class="badge bg-{{ template.accessType == 'public' ? 'success' : 'warning' }}">{{ template.accessType|capitalize }}</span></td>
+                        <td>
+                            <a href="{{ path('app_template_edit', {'id': template.id}) }}" class="btn btn-sm btn-info me-1">Edit</a>
+                            <form action="{{ path('app_template_delete', {'id': template.id}) }}" method="post" onsubmit="return confirm('Are you sure you want to delete this template?');" class="d-inline">
+                                <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ template.id) }}">
+                                <button type="submit" class="btn btn-sm btn-danger">Delete</button>
+                            </form>
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+{% endif %}

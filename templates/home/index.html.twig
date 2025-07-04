@@ -1,0 +1,80 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Welcome to Forms App!{% endblock %}
+
+{% block body %}
+<div class="row">
+    <div class="col-md-8">
+        <h1>Latest Templates</h1>
+        <div class="row">
+            {% for template in latestTemplates %}
+                <div class="col-md-6 mb-4">
+                    <div class="card template-card h-100">
+                        {% if template.imageUrl %}
+                            <img src="{{ template.imageUrl }}" class="card-img-top" alt="{{ template.title }}" style="max-height: 200px; object-fit: cover;">
+                        {% endif %}
+                        <div class="card-body">
+                            <h5 class="card-title">{{ template.title }}</h5>
+                            <p class="card-text">{{ template.description|striptags|slice(0, 100) }}...</p>
+                            <a href="{{ path('app_template_show', {'id': template.id}) }}" class="btn btn-primary">View Template</a>
+                        </div>
+                        <div class="card-footer text-muted">
+                            Created by {{ template.user.email }} on {{ template.createdAt|date('Y-m-d') }}
+                            <br>
+                            Likes: {{ template.likes }} | Forms: {{ template.forms|length }}
+                        </div>
+                    </div>
+                </div>
+            {% else %}
+                <div class="col-12">
+                    <p>No templates found yet. Why not create one?</p>
+                </div>
+            {% endfor %}
+        </div>
+        {# Pagination controls #}
+        <div class="navigation d-flex justify-content-center">
+            {{ knp_pagination_render(latestTemplates) }}
+        </div>
+    </div>
+
+    <div class="col-md-4">
+        <div class="card mb-4">
+            <div class="card-header">
+                <h3>Top 5 Most Popular Templates</h3>
+            </div>
+            <ul class="list-group list-group-flush">
+                {% for template in popularTemplates %}
+                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                        <a href="{{ path('app_template_show', {'id': template.id}) }}">{{ template.title }}</a>
+                        <span class="badge bg-primary rounded-pill">{{ template.forms|length }} forms</span>
+                    </li>
+                {% else %}
+                    <li class="list-group-item">No popular templates yet.</li>
+                {% endfor %}
+            </ul>
+        </div>
+
+        <div class="card">
+            <div class="card-header">
+                <h3>Tag Cloud</h3>
+            </div>
+            <div class="card-body">
+                {% if tagCloud is not empty %}
+                    <div class="d-flex flex-wrap gap-2">
+                        {% for tag in tagCloud %}
+                            {# Simple sizing based on count - adjust as needed #}
+                            <a href="{{ path('app_search', {'q': tag.tag_name}) }}"
+                               style="font-size: {{ 0.8 + (tag.tag_count / (tagCloud[0].tag_count + 0.1)) * 1.2 }}em;"
+                               class="badge bg-info text-dark text-decoration-none">
+                                {{ tag.tag_name }}
+                            </a>
+                        {% endfor %}
+                    </div>
+                {% else %}
+                    <p>No tags yet.</p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

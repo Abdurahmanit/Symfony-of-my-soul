@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="{{ app.request.locale }}">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Forms App{% endblock %}</title>
+    <link rel="icon" href="{{ asset('favicon.ico') }}">
+    {% block stylesheets %}
+            {{ encore_entry_link_tags('app') }}
+        {{ encore_entry_link_tags('app') }}
+    {% endblock %}
+</head>
+<body class="{{ get_current_theme() }}-theme">
+    {% include 'components/_navbar.html.twig' %}
+
+    <main class="container my-4">
+        {% include 'components/_flash_messages.html.twig' %}
+        {% block body %}{% endblock %}
+    </main>
+
+    <footer class="footer mt-auto py-3 bg-light">
+        <div class="container text-center">
+            <span>&copy; {{ "now"|date("Y") }} Forms App. All rights reserved.</span>
+            <div class="mt-2">
+                <button id="theme-toggle" class="btn btn-sm btn-outline-secondary">Toggle Theme</button>
+                <select id="language-select" class="form-select-sm ms-2" onchange="this.value && (window.location.href = '/' + this.value + window.location.pathname)">
+                    <option value="en" {% if app.request.locale == 'en' %}selected{% endif %}>English</option>
+                    <option value="pl" {% if app.request.locale == 'pl' %}selected{% endif %}>Polski</option>
+                    {# Add more languages here as needed #}
+                </select>
+            </div>
+        </div>
+    </footer>
+
+    {% block javascripts %}
+            {{ encore_entry_script_tags('app') }}
+        {{ encore_entry_script_tags('app') }}
+    {% endblock %}
+</body>
+</html>

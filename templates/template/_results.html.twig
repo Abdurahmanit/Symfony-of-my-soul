@@ -1,0 +1,52 @@
+{# templates/template/_results.html.twig #}
+{# Used to display filled forms (results) within the template show page #}
+{# Variables: template (App\Entity\Template) #}
+
+{% if template.forms is empty %}
+    <p>No forms have been filled for this template yet.</p>
+{% else %}
+    <div class="table-responsive">
+        <table class="table table-striped table-hover">
+            <thead>
+                <tr>
+                    <th>Form ID</th>
+                    <th>Submitted By</th>
+                    <th>Submitted At</th>
+                    {# Dynamic columns for questions marked as 'showInTable' #}
+                    {% for question in template.questions %}
+                        {% if question.showInTable %}
+                            <th>{{ question.title }}</th>
+                        {% endif %}
+                    {% endfor %}
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for form in template.forms %}
+                    <tr>
+                        <td>{{ form.id }}</td>
+                        <td>{{ form.fixedUserEmail }}</td>
+                        <td>{{ form.submittedAt|date('Y-m-d H:i') }}</td>
+                        {# Display answers for questions marked as 'showInTable' #}
+                        {% for question in template.questions %}
+                            {% if question.showInTable %}
+                                {% set answer_property = question.type ~ 'Answer' ~ (loop.index0 + 1) %} {# e.g., stringAnswer1 #}
+                                {% set answer_value = attribute(form, answer_property) %}
+                                <td>
+                                    {% if question.type == 'checkbox' %}
+                                        {% if answer_value %}Yes{% else %}No{% endif %}
+                                    {% else %}
+                                        {{ answer_value }}
+                                    {% endif %}
+                                </td>
+                            {% endif %}
+                        {% endfor %}
+                        <td>
+                            <a href="{{ path('app_form_show', {'id': form.id}) }}" class="btn btn-sm btn-outline-primary">View</a>
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+{% endif %}

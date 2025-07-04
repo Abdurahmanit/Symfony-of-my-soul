@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<phpunit xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:noNamespaceSchemaLocation="https://schema.phpunit.de/10.0/phpunit.xsd"
+         backupGlobals="false"
+         colors="true"
+         bootstrap="bootstrap.php"
+         failOnRisky="true"
+         failOnWarning="true"
+         cacheDirectory=".phpunit.cache"
+         stopOnFailure="true"
+>
+    <php>
+        <ini name="display_errors" value="1" />
+        <ini name="error_reporting" value="-1" />
+        <server name="APP_ENV" value="test" force="true" />
+        <server name="SHELL_VERBOSITY" value="-1" />
+        <server name="SYMFONY_PHPUNIT_REMOVE_LEGACY_CONTROLLER_ATTRIBUTES" value="true" />
+        <server name="SYMFONY_PHPUNIT_KERNEL_CLASS" value="App\Kernel" />
+        <server name="SYMFONY_DEPRECATIONS_HELPER" value="max[self]=0" />
+    </php>
+
+    <testsuites>
+        <testsuite name="Project Test Suite">
+            <directory>./Unit</directory>
+            <directory>./Functional</directory>
+        </testsuite>
+    </testsuites>
+
+    <coverage processUncoveredFiles="true">
+        <include>
+            <directory suffix=".php">src</directory>
+        </include>
+        <exclude>
+            <directory>src/DataFixtures</directory>
+            <directory>src/DependencyInjection</directory>
+            <directory>src/Entity</directory>
+            <directory>src/Kernel.php</directory>
+            <directory>src/Migrations</directory>
+            <directory>src/Tests</directory>
+            <directory>src/Twig</directory>
+        </exclude>
+    </coverage>
+
+    <listeners>
+        <listener class="Symfony\Bridge\PhpUnit\SymfonyTestsListener">
+            <arguments>
+                <array>
+                    <element key="bootstrap">
+                        <string>src/Kernel.php</string>
+                    </element>
+                </array>
+            </arguments>
+        </listener>
+    </listeners>
+</phpunit>

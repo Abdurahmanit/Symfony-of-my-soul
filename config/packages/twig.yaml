@@ -1,0 +1,13 @@
+twig:
+    default_path: '%kernel.project_dir%/templates'
+    autoescape: 'html'
+    strict_variables: '%kernel.debug%'
+    globals:
+        app_theme_locale_service: '@App\Service\ThemeLocaleService'
+        app_security: '@security.helper'
+        app_user: 'app.user'
+    paths:
+        '%kernel.project_dir%/templates': ~
+
+knp_markdown:
+    parser: ~

@@ -1,0 +1,41 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{% if template.id %}Edit Template{% else %}Create Template{% endif %}{% endblock %}
+
+{% block body %}
+<div id="template-form-root" data-initial-template="{{ template_data|json_encode }}">
+    {# React will render the form here #}
+</div>
+
+{# Pass initial template data to React if editing #}
+{% set template_data = {
+    general: {
+        id: template.id ?? null,
+        title: template.title ?? '',
+        description: template.description ?? '',
+        imageUrl: template.imageUrl ?? '',
+        topic: template.topic ? template.topic.id : '',
+        tags: template.tags|map(t => t.name)|json_encode|raw,
+        accessType: template.accessType ?? 'public',
+        restrictedUsers: template.restrictedUsers|map(u => {'id': u.id, 'name': u.userIdentifier, 'email': u.email})|json_encode|raw
+    },
+    questions: template.questions is defined ? template.questions|map(q => {
+        return {
+            id: q.id,
+            title: q.title,
+            description: q.description,
+            type: q.type,
+            showInTable: q.showInTable,
+            position: q.position
+        }
+    })|json_encode|raw : '[]'
+} %}
+
+{# You will likely include JavaScript to initialize the React component #}
+{# This is typically done in public/assets/js/app.js which is included in base.html.twig #}
+{# Example of how data would be passed (already in public/assets/js/react/index.js) #}
+{# <script>
+    const initialTemplateData = {{ template_data|json_encode|raw }};
+    // Then pass initialTemplateData to your React root component
+</script> #}
+{% endblock %}

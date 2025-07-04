@@ -1,0 +1,201 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ template.title }} - Forms App{% endblock %}
+
+{% block body %}
+<div class="row">
+    <div class="col-md-12">
+        <h1 class="mb-3">{{ template.title }}</h1>
+        <p class="text-muted">By {{ template.user.email }} on {{ template.createdAt|date('Y-m-d H:i') }} | Topic: {{ template.topic.name }}</p>
+
+        {% if template.imageUrl %}
+            <div class="text-center mb-4">
+                <img src="{{ template.imageUrl }}" class="img-fluid rounded" alt="{{ template.title }}" style="max-height: 400px; object-fit: cover;">
+            </div>
+        {% endif %}
+
+        <div class="mb-4">
+            <strong>Description:</strong>
+            <div class="card card-body mt-2">
+                {{ template.description|markdown }}
+            </div>
+        </div>
+
+        <div class="mb-4">
+            <strong>Tags:</strong>
+            {% if template.tags is not empty %}
+                {% for tag in template.tags %}
+                    <span class="badge bg-primary me-1">{{ tag.name }}</span>
+                {% endfor %}
+            {% else %}
+                <span class="text-muted">No tags</span>
+            {% endif %}
+        </div>
+
+        <div class="mb-4">
+            <strong>Access Type:</strong>
+            <span class="badge bg-{{ template.accessType == 'public' ? 'success' : 'warning' }}">
+                {{ template.accessType|capitalize }}
+            </span>
+            {% if template.accessType == 'restricted' and template.restrictedUsers is not empty %}
+                <div class="mt-2">
+                    <small>Allowed Users:</small>
+                    {% for user in template.restrictedUsers %}
+                        <span class="badge bg-secondary me-1">{{ user.email }}</span>
+                    {% endfor %}
+                </div>
+            {% endif %}
+        </div>
+
+        {% if is_granted('ROLE_USER') and (template.accessType == 'public' or template.restrictedUsers.contains(app.user)) %}
+            <div class="mb-4">
+                <a href="{{ path('app_template_fill', {'templateId': template.id}) }}" class="btn btn-success btn-lg">Fill Out Form</a>
+                {% if is_granted('ROLE_USER') %}
+                    {% set user_liked = false %}
+                    {% for likedUser in template.likedByUsers %}
+                        {% if likedUser.id == app.user.id %}
+                            {% set user_liked = true %}
+                        {% endif %}
+                    {% endfor %}
+
+                    <form action="#" method="post" class="d-inline ms-3"> {# Placeholder for like form #}
+                        <input type="hidden" name="template_id" value="{{ template.id }}">
+                        <button type="submit" class="btn btn-outline-danger">
+                            {% if user_liked %}Unlike{% else %}Like{% endif %} ({{ template.likes }})
+                        </button>
+                    </form>
+                {% endif %}
+            </div>
+        {% elseif not is_granted('ROLE_USER') %}
+            <div class="alert alert-info" role="alert">
+                <a href="{{ path('app_login') }}">Log in</a> to fill out this form or create your own templates.
+            </div>
+        {% else %}
+            <div class="alert alert-warning" role="alert">
+                You do not have access to fill out this template.
+            </div>
+        {% endif %}
+
+        {% if is_granted('ROLE_USER') and (template.user == app.user or is_admin()) %}
+            <div class="mb-4">
+                <a href="{{ path('app_template_edit', {'id': template.id}) }}" class="btn btn-info me-2">Edit Template</a>
+                <form action="{{ path('app_template_delete', {'id': template.id}) }}" method="post" onsubmit="return confirm('Are you sure you want to delete this template?');" class="d-inline">
+                    <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ template.id) }}">
+                    <button type="submit" class="btn btn-danger">Delete Template</button>
+                </form>
+            </div>
+        {% endif %}
+
+        <ul class="nav nav-tabs" id="templateTabs" role="tablist">
+            <li class="nav-item" role="presentation">
+                <button class="nav-link active" id="questions-tab" data-bs-toggle="tab" data-bs-target="#questions" type="button" role="tab" aria-controls="questions" aria-selected="true">Questions</button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link" id="results-tab" data-bs-toggle="tab" data-bs-target="#results" type="button" role="tab" aria-controls="results" aria-selected="false">Results ({{ template.forms|length }})</button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link" id="aggregation-tab" data-bs-toggle="tab" data-bs-target="#aggregation" type="button" role="tab" aria-controls="aggregation" aria-selected="false">Aggregation</button>
+            </li>
+        </ul>
+        <div class="tab-content border border-top-0 p-3" id="templateTabsContent">
+            <div class="tab-pane fade show active" id="questions" role="tabpanel" aria-labelledby="questions-tab">
+                {% include 'template/_questions.html.twig' with {'template': template, 'editable': false} %}
+            </div>
+            <div class="tab-pane fade" id="results" role="tabpanel" aria-labelledby="results-tab">
+                {% include 'template/_results.html.twig' with {'template': template} %}
+            </div>
+            <div class="tab-pane fade" id="aggregation" role="tabpanel" aria-labelledby="aggregation-tab">
+                {# Aggregation content will go here, requiring custom logic #}
+                <p>Aggregation of results will be displayed here.</p>
+                {% if template.forms is empty %}
+                    <p>No forms filled yet to aggregate data.</p>
+                {% else %}
+                    {# You'll need to fetch and process aggregation data in your controller or service #}
+                    {# For numerical fields: average, min, max #}
+                    {# For string fields: most common answers #}
+                    {# For checkboxes: count of checked/unchecked #}
+                    <p>Implement specific aggregation logic based on question types.</p>
+                {% endif %}
+            </div>
+        </div>
+
+        <h3 class="mt-5">Comments</h3>
+        <div id="comments-section">
+            {% include 'template/_comments.html.twig' with {'template': template, 'comments': comments} %}
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    {% if is_granted('ROLE_USER') %}
+        <script type="text/javascript">
+            // Mercure JS for real-time comments
+            const commentsSection = document.getElementById('comments-list');
+            if (commentsSection) {
+                const templateId = {{ template.id }};
+                const hubUrl = new URL('{{ mercure_public_url }}'); // From mercure_public_url in config
+                hubUrl.searchParams.append('topic', '{{ url('app_template_show', {'id': template.id}, absolute=true) }}');
+                const eventSource = new EventSource(hubUrl);
+
+                eventSource.onmessage = event => {
+                    const data = JSON.parse(event.data);
+                    // Ensure the comment is for this specific template
+                    if (data.templateId == templateId) {
+                        const newCommentHtml = `
+                            <div class="card mb-2">
+                                <div class="card-body">
+                                    <h6 class="card-subtitle mb-2 text-muted">${data.userEmail} <small>on ${data.createdAt}</small></h6>
+                                    <p class="card-text">${data.content}</p>
+                                </div>
+                            </div>
+                        `;
+                        commentsSection.insertAdjacentHTML('beforeend', newCommentHtml);
+                        commentsSection.scrollTop = commentsSection.scrollHeight; // Scroll to bottom
+                    }
+                };
+            }
+
+            // Add new comment functionality
+            const commentForm = document.getElementById('comment-form');
+            const commentContentInput = document.getElementById('comment_content');
+
+            if (commentForm && commentContentInput) {
+                commentForm.addEventListener('submit', async function(e) {
+                    e.preventDefault();
+                    const content = commentContentInput.value.trim();
+
+                    if (!content) {
+                        alert('Comment cannot be empty.');
+                        return;
+                    }
+
+                    try {
+                        const response = await fetch('{{ path('api_template_comments_add', {'id': template.id}) }}', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                                'X-Requested-With': 'XMLHttpRequest',
+                                'X-CSRF-TOKEN': '{{ csrf_token('comment_add') }}'
+                            },
+                            body: JSON.stringify({ content: content })
+                        });
+
+                        if (!response.ok) {
+                            const errorData = await response.json();
+                            throw new Error(errorData.error || 'Failed to add comment.');
+                        }
+
+                        commentContentInput.value = ''; // Clear input
+                        // Mercure will handle adding the comment to the list
+                    } catch (error) {
+                        alert('Error adding comment: ' + error.message);
+                        console.error('Error adding comment:', error);
+                    }
+                });
+            }
+        </script>
+    {% endif %}
+{% endblock %}

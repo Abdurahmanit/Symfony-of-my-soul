@@ -1,0 +1,49 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Form #{{ form.id }} - {{ form.template.title }}{% endblock %}
+
+{% block body %}
+<h1>Filled Form: {{ form.template.title }}</h1>
+<p class="text-muted">Submitted by: {{ form.fixedUserEmail }} on {{ form.submittedAt|date('Y-m-d H:i') }}</p>
+<p class="text-muted">Last updated: {{ form.updatedAt|date('Y-m-d H:i') }}</p>
+
+<div class="card mb-4">
+    <div class="card-header">
+        <h5>Answers</h5>
+    </div>
+    <ul class="list-group list-group-flush">
+        {# Display fixed fields #}
+        <li class="list-group-item"><strong>Submitted By:</strong> {{ form.fixedUserEmail }}</li>
+        <li class="list-group-item"><strong>Submission Date:</strong> {{ form.fixedDate|date('Y-m-d H:i') }}</li>
+
+        {# Display custom question answers dynamically #}
+        {% for question in template.questions %}
+            {% set answer_property = question.type ~ 'Answer' ~ (loop.index0 + 1) %} {# e.g., stringAnswer1 #}
+            {% set answer_value = attribute(form, answer_property) %}
+            <li class="list-group-item">
+                <strong>{{ question.title }}:</strong>
+                {% if question.type == 'checkbox' %}
+                    {% if answer_value is not null %}{{ answer_value ? 'Yes' : 'No' }}{% else %}N/A{% endif %}
+                {% else %}
+                    {% if answer_value is not null %}{{ answer_value }}{% else %}N/A{% endif %}
+                {% endif %}
+                {% if question.description %}
+                    <br><small class="text-muted">{{ question.description }}</small>
+                {% endif %}
+            </li>
+        {% endfor %}
+    </ul>
+</div>
+
+{% if is_granted('ROLE_USER') and (form.user == app.user or is_admin()) %}
+    <div class="mb-3">
+        <a href="{{ path('app_form_edit', {'id': form.id}) }}" class="btn btn-info me-2">Edit Answers</a>
+        <form action="{{ path('app_form_delete', {'id': form.id}) }}" method="post" onsubmit="return confirm('Are you sure you want to delete this form?');" class="d-inline">
+            <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ form.id) }}">
+            <button type="submit" class="btn btn-danger">Delete Form</button>
+        </form>
+    </div>
+{% endif %}
+
+<a href="{{ path('app_template_show', {'id': template.id}) }}" class="btn btn-secondary mt-3">Back to Template</a>
+{% endblock %}
